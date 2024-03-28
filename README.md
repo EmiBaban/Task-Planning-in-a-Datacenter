@@ -10,31 +10,31 @@ MyDispatcher:
 
 Round Robin:
 
-    - nodurile sunt planificate  (i + 1) % n, unde i este ID-ul ultimului nod la care s-a alocat un task,
+- nodurile sunt planificate  (i + 1) % n, unde i este ID-ul ultimului nod la care s-a alocat un task,
     
-     iar n este numarul total de noduri.
+iar n este numarul total de noduri.
 
 
 Shortest Queue:
 
-    - parcuge lista de host-uri pentru a afla host-ul cu coada cea mai mica
+- parcuge lista de host-uri pentru a afla host-ul cu coada cea mai mica
     
-    - daca exista un task in executie il adun la dimensiune
+- daca exista un task in executie il adun la dimensiune
     
-    - adauga task-ul la host-ul respectiv
+- adauga task-ul la host-ul respectiv
 
 
 Size Interval Task Assignment:
 
-    - daca task-ul este short este adaugat host-ului 0, daca e medium este adaugat la 1,
+- daca task-ul este short este adaugat host-ului 0, daca e medium este adaugat la 1,
     
-    iar daca este long, este adaugat la 2
+iar daca este long, este adaugat la 2
 
 
 
 Least Work Left:
 
-    - similar cu Shortest Queue doar ca se extrage host-ul cu durata totala cea mai mica de calcule ramase de executat
+- similar cu Shortest Queue doar ca se extrage host-ul cu durata totala cea mai mica de calcule ramase de executat
 
 
 
