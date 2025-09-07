@@ -1,59 +1,40 @@
-Tema #2 Planificarea de task-uri intr-un datacenter
+# Task Planning in a Datacenter
 
-Băban Mihai-Emilian, 334CD
+**Author:** Mihai-Emilian Băban (334CD)
 
-MyDispatcher:
+## Overview
 
-- este responsabil pentru asignarea task-urilor la diverse host-uri bazate pe diferite algoritme de planificare.
+This project focuses on the efficient scheduling of tasks across multiple hosts in a datacenter environment. The core component, `MyDispatcher`, is responsible for assigning tasks to hosts based on various scheduling algorithms. Each host executes assigned tasks according to their own queue management and priority rules.
 
-- algoritmi de planificare implementati:
+## Scheduling Algorithms Implemented
 
-Round Robin:
+### 1. Round Robin
+- Tasks are allocated to hosts in a cyclic manner: `(i + 1) % n`, where `i` is the ID of the last host that received a task and `n` is the total number of hosts.
 
-- nodurile sunt planificate  (i + 1) % n, unde i este ID-ul ultimului nod la care s-a alocat un task,
-    
-iar n este numarul total de noduri.
+### 2. Shortest Queue
+- The dispatcher scans all hosts and selects the host with the shortest queue.
+- If a task is currently executing, its duration is included in the queue size calculation.
+- The new task is then assigned to that host.
 
+### 3. Size Interval Task Assignment
+- Tasks are assigned based on their size:
+    - **Short Tasks** → Host 0
+    - **Medium Tasks** → Host 1
+    - **Long Tasks** → Host 2
 
-Shortest Queue:
+### 4. Least Work Left
+- Similar to Shortest Queue, but selects the host with the lowest total remaining computation time (including running and queued tasks).
 
-- parcuge lista de host-uri pentru a afla host-ul cu coada cea mai mica
-    
-- daca exista un task in executie il adun la dimensiune
-    
-- adauga task-ul la host-ul respectiv
+## Host Responsibilities (`MyHost`)
+- Handles execution of tasks.
+- Uses a custom `QueueComparator` for priority queue management. If two tasks have the same priority, they are compared by start time.
+- `getWorkLeft()` computes the total remaining duration of all queued tasks plus the remaining time of the currently running task.
+- Executes the highest priority task from the queue and marks it as running.
+- During execution, if the running task is preemptible and a higher priority task arrives, the higher priority task is executed immediately and the preempted task is returned to the queue.
+- Tasks are marked as complete once their remaining time reaches zero.
 
+## How It Works
 
-Size Interval Task Assignment:
-
-- daca task-ul este short este adaugat host-ului 0, daca e medium este adaugat la 1,
-    
-iar daca este long, este adaugat la 2
-
-
-
-Least Work Left:
-
-- similar cu Shortest Queue doar ca se extrage host-ul cu durata totala cea mai mica de calcule ramase de executat
-
-
-
-MyHost:
-
-- este responsabil de executarea task-urilor
-
-- am implementat clasa QueueComparator pentru coada de prioritate. Daca au prioritati egale compar dupa start
-
-- getWorkLeft():
-
-    - calculez durata totala a task-urilor din coada si apoi adun cu durata ramasa din task-ul ce e in executie
-
-- extrag elementul cu prioritatea cea mai mare din coada si setez taskInExecution true
-
-- cat timp timpul ramas al task-ului nu ajunge la 0, scad din left cat timp a trecut intr-o iteratie in loop
-
-- daca task-ul care ruleaza e preemptabil si task-ul urmator are prioritate mai mare, task-ul cu prioritate mai mare
-
-    devine cel care ruleaza, iar celalalt este adaugat inapoi in coada
-
-- dupa ce s-a iesit din loop termin task-ul
+1. Tasks are submitted to the dispatcher.
+2. The dispatcher assigns tasks to hosts according to the selected scheduling algorithm.
+3. Hosts manage their own task queues and execute tasks based on priority and preemption rules.
